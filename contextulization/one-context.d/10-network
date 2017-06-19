@@ -9,12 +9,15 @@ for i in $(ifconfig -l ether)
         ;;
       vtnet0)
         sysrc -q ifconfig_vtnet0="inet $ETH0_IP netmask $ETH0_MASK" > /dev/null
+        sysrc -q ifconfig_vtnet0_ipv6="inet6 $ETH0_IP6 prefixlen 64" > /dev/null
         ;;
       vtnet1)
         sysrc -q ifconfig_vtnet1="inet $ETH1_IP netmask $ETH1_MASK" > /dev/null
+        sysrc -q ifconfig_vtnet1_ipv6="inet6 $ETH1_IP6 prefixlen 64" > /dev/null
         ;;
       vtnet2)
         sysrc -q ifconfig_vtnet2="inet $ETH2_IP netmask $ETH2_MASK" > /dev/null
+        sysrc -q ifconfig_vtnet2_ipv6="inet6 $ETH2_IP6 prefixlen 64" > /dev/null
         ;;
       *)
         echo "Unknown Interface Type"
@@ -22,6 +25,7 @@ for i in $(ifconfig -l ether)
     esac
   done
   sysrc -q defaultrouter="$ETH0_GATEWAY" > /dev/null
+  sysrc -q ipv6_defaultrouter="$ETH0_GATEWAY6" ? /dev/null
 }
 
 networking_restart() {
