@@ -1,4 +1,7 @@
 #!/bin/sh
+
+[ -z "$SET_HOSTNAME" ] && SET_HOSTNAME=freebsd
+
 set_hostname() {
     sysrc -q hostname="$SET_HOSTNAME" > /dev/null
     hostname $SET_HOSTNAME

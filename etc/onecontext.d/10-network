@@ -1,5 +1,12 @@
 #!/bin/sh
 
+get_first_nonempty() {
+	for x in $@; do
+		echo $x
+		return 0
+	done
+}
+
 gen_config() {
 echo "==> Configuring Network Interfaces"
 for i in $(ifconfig -l ether)
@@ -8,24 +15,24 @@ for i in $(ifconfig -l ether)
       'lo0' | 'plip0' | 'pflog0')
         ;;
       vtnet0)
-        sysrc -q ifconfig_vtnet0="inet $ETH0_IP netmask $ETH0_MASK" > /dev/null
-        sysrc -q ifconfig_vtnet0_ipv6="inet6 $ETH0_IP6 prefixlen 64" > /dev/null
+        [ -n "$ETH0_IP"  ] && sysrc -q ifconfig_vtnet0="inet $ETH0_IP netmask $ETH0_MASK" > /dev/null
+        [ -n "$ETH0_IP6" ] && sysrc -q ifconfig_vtnet0_ipv6="inet6 $ETH0_IP6 prefixlen 64" > /dev/null
         ;;
       vtnet1)
-        sysrc -q ifconfig_vtnet1="inet $ETH1_IP netmask $ETH1_MASK" > /dev/null
-        sysrc -q ifconfig_vtnet1_ipv6="inet6 $ETH1_IP6 prefixlen 64" > /dev/null
+        [ -n "$ETH1_IP"  ] && sysrc -q ifconfig_vtnet1="inet $ETH1_IP netmask $ETH1_MASK" > /dev/null
+        [ -n "$ETH1_IP6" ] && sysrc -q ifconfig_vtnet1_ipv6="inet6 $ETH1_IP6 prefixlen 64" > /dev/null
         ;;
       vtnet2)
-        sysrc -q ifconfig_vtnet2="inet $ETH2_IP netmask $ETH2_MASK" > /dev/null
-        sysrc -q ifconfig_vtnet2_ipv6="inet6 $ETH2_IP6 prefixlen 64" > /dev/null
+        [ -n "$ETH2_IP"  ] && sysrc -q ifconfig_vtnet2="inet $ETH2_IP netmask $ETH2_MASK" > /dev/null
+        [ -n "$ETH2_IP6" ] && sysrc -q ifconfig_vtnet2_ipv6="inet6 $ETH2_IP6 prefixlen 64" > /dev/null
         ;;
       *)
         echo "Unknown Interface Type"
         ;;
     esac
   done
-  sysrc -q defaultrouter="$ETH0_GATEWAY" > /dev/null
-  sysrc -q ipv6_defaultrouter="$ETH0_GATEWAY6" ? /dev/null
+  sysrc -q defaultrouter="$(get_first_nonempty $ETH0_GATEWAY $ETH1_GATEWAY $ETH2_GATEWAY)" > /dev/null
+  sysrc -q ipv6_defaultrouter="$(get_first_nonempty $ETH0_GATEWAY6 $ETH1_GATEWAY6 $ETH2_GATEWAY6)" > /dev/null
 }
 
 networking_restart() {
