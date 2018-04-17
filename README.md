@@ -1,5 +1,9 @@
 # one-freebsd
-Opennebula contextulization for FreeBSD (tested with 10.3)
+Opennebula contextualization for FreeBSD.
 
-To install simply clone the repo and copy the vmcontext into /etc/rc.d and the one-context.d folder into /etc making sure all the scripts are chmod +x
-then echo 'vmcontext_enable="YES"' >> /etc/rc.conf
+Tested with 11.1-RELEASE and CURRENT (as of Apr 2018).
+
+Install from ports/pkg: available as `sysutils/opennebula-contextualization`.
+Then `echo 'vmcontext_enable="YES"' >> /etc/rc.conf`.
+
+Note: It does not make much sense to install this into an existing VM. It should be installed into the image before first boot, so that it can configure networking on first boot.
